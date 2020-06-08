@@ -27,7 +27,7 @@ class Question {
 
 let gameOptions = {
     timeDown: 0,
-    timeLimit: 30,
+    timeLimit: 60,
     gravity: 2000,
     crateSpeed: 700,
     crateHorizontalRange: 540,
