@@ -1,33 +1,7 @@
-let game;
+var game;
 
-// Prototype of Question
-class Question {
-    constructor(question, answers, correct) {
-        this.question = question;
-        this.answers = answers;
-        this.correct = correct;
-    }
-
-    displayQuestion() {
-        console.log(this.question);
-        for (let i = 0; i < this.answers.length; i++) {
-            console.log(i + ". " + this.answers[i]);
-        }
-    }
-
-    checkAnswer(ans, handleCorrect, handleWrong) {
-        if (ans === this.correct) {
-            handleCorrect
-        } else {
-            handleWrong();
-        }
-
-    }
-}
-
-let gameOptions = {
-    timeDown: 0,
-    timeLimit: 60,
+var gameOptions = {
+    timeLimit: 10,
     gravity: 2000,
     crateSpeed: 700,
     crateHorizontalRange: 540,
@@ -38,13 +12,13 @@ let gameOptions = {
     playerSpeed: 6000
 }
 
-let GROUNDHEIGHT;
-let CRATEHEIGHT;
+var GROUNDHEIGHT;
+var CRATEHEIGHT;
 
 window.onload = function () {
-    let windowWidth = window.innerWidth;
-    let windowHeight = window.innerHeight;
-    let ratio = windowHeight / windowWidth;
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
+    var ratio = windowHeight / windowWidth;
     if (ratio >= 1) {
         if (ratio < 1.5) {
             gameOptions.gameWidth = gameOptions.gameHeight / ratio;
@@ -58,7 +32,7 @@ window.onload = function () {
     game.state.start("PlayGame");
 }
 
-let playGame = function () { };
+var playGame = function () { };
 
 playGame.prototype = {
     preload: function () {
@@ -79,7 +53,6 @@ playGame.prototype = {
         game.load.bitmapFont("font", "assets/fonts/font.png", "assets/fonts/font.fnt");
         game.load.bitmapFont("smallfont", "assets/fonts/smallfont.png", "assets/fonts/smallfont.fnt");
     },
-
     create: function () {
         if (!Phaser.Device.desktop) {
             game.scale.forceOrientation(false, true);
@@ -103,7 +76,7 @@ playGame.prototype = {
         GROUNDHEIGHT = game.cache.getImage("ground").height;
         CRATEHEIGHT = game.cache.getImage("crate").height;
         this.firstCrate = true;
-        let sky = game.add.image(0, 0, "sky");
+        var sky = game.add.image(0, 0, "sky");
         sky.width = game.width;
         sky.height = game.height;
         this.cameraGroup = game.add.group();
@@ -112,12 +85,12 @@ playGame.prototype = {
         game.physics.startSystem(Phaser.Physics.BOX2D);
         game.physics.box2d.gravity.y = gameOptions.gravity;
         this.canDrop = true;
-        let ground = game.add.sprite(game.width / 2, game.height, "ground");
+        var ground = game.add.sprite(game.width / 2, game.height, "ground");
         ground.y = game.height - ground.height / 2;
         this.movingCrate = game.add.sprite((game.width - gameOptions.crateHorizontalRange) / 2, game.height - GROUNDHEIGHT - gameOptions.fallingHeight, "crate");
         this.movingCrate.anchor.set(0.5);
         this.cameraGroup.add(this.movingCrate);
-        let crateTween = game.add.tween(this.movingCrate).to({
+        var crateTween = game.add.tween(this.movingCrate).to({
             x: (game.width + gameOptions.crateHorizontalRange) / 2
         }, gameOptions.crateSpeed, Phaser.Easing.Linear.None, true, 0, -1, true);
         game.physics.box2d.enable(ground);
@@ -127,23 +100,22 @@ playGame.prototype = {
         this.cameraGroup.add(ground);
         game.input.onDown.add(this.dropCrate, this);
         this.menuGroup = game.add.group();
-        let tap = game.add.sprite(game.width / 2, game.height / 2, "tap");
+        var tap = game.add.sprite(game.width / 2, game.height / 2, "tap");
         tap.anchor.set(0.5);
         this.menuGroup.add(tap);
-        let title = game.add.image(game.width / 2, tap.y - 470, "title");
+        var title = game.add.image(game.width / 2, tap.y - 470, "title");
         title.anchor.set(0.5, 0);
         this.menuGroup.add(title);
-        let hiScoreText = game.add.bitmapText(game.width / 2, game.height - 74, "smallfont", "DIEM CAO NHAT", 24);
+        var hiScoreText = game.add.bitmapText(game.width / 2, game.height - 74, "smallfont", "DIEM CAO NHAT", 24);
         hiScoreText.anchor.set(0.5);
         this.menuGroup.add(hiScoreText);
-        let hiScore = game.add.bitmapText(game.width / 2, game.height - 20, "font", this.savedData.score.toString(), 72);
+        var hiScore = game.add.bitmapText(game.width / 2, game.height - 20, "font", this.savedData.score.toString(), 72);
         hiScore.anchor.set(0.5);
         this.menuGroup.add(hiScore);
-        let tapTween = game.add.tween(tap).to({
+        var tapTween = game.add.tween(tap).to({
             alpha: 0
         }, 150, Phaser.Easing.Cubic.InOut, true, 0, -1, true);
     },
-
     dropCrate: function () {
         if (this.firstCrate) {
             this.firstCrate = false;
@@ -155,7 +127,7 @@ playGame.prototype = {
         if (this.canDrop && this.timer <= gameOptions.timeLimit) {
             this.canDrop = false;
             this.movingCrate.alpha = 0;
-            let fallingCrate = game.add.sprite(this.movingCrate.x, this.movingCrate.y, "crate");
+            var fallingCrate = game.add.sprite(this.movingCrate.x, this.movingCrate.y, "crate");
             fallingCrate.hit = false;
             game.physics.box2d.enable(fallingCrate);
             fallingCrate.body.friction = 1;
@@ -163,7 +135,7 @@ playGame.prototype = {
             this.crateGroup.add(fallingCrate);
             fallingCrate.body.setCollisionCategory(1);
             fallingCrate.body.setCategoryContactCallback(1, function (b, b2, fixture1, fixture2, contact, impulseInfo) {
-                let delay = Date.now() - this.lastSoundPlayed;
+                var delay = Date.now() - this.lastSoundPlayed;
                 if (delay > 200 && this.timer <= gameOptions.timeLimit) {
                     this.lastSoundPlayed = Date.now();
                     Phaser.ArrayUtils.getRandomItem(this.hitSound).play();
@@ -176,7 +148,6 @@ playGame.prototype = {
             }, this);
         }
     },
-
     update: function () {
         this.crateGroup.forEach(function (i) {
             if (i.y > game.height + i.height) {
@@ -187,13 +158,12 @@ playGame.prototype = {
             }
         }, this);
     },
-
     scaleCamera: function (cameraScale) {
-        let moveTween = game.add.tween(this.cameraGroup).to({
+        var moveTween = game.add.tween(this.cameraGroup).to({
             x: (game.width - game.width * cameraScale) / 2,
             y: game.height - game.height * cameraScale,
         }, 200, Phaser.Easing.Quadratic.IN, true);
-        let scaleTween = game.add.tween(this.cameraGroup.scale).to({
+        var scaleTween = game.add.tween(this.cameraGroup.scale).to({
             x: cameraScale,
             y: cameraScale,
         }, 200, Phaser.Easing.Quadratic.IN, true);
@@ -202,75 +172,54 @@ playGame.prototype = {
             this.movingCrate.alpha = 1;
         }, this)
     },
-
     getMaxHeight: function () {
-        let maxHeight = 0
+        var maxHeight = 0
         this.crateGroup.forEach(function (i) {
             if (i.hit) {
-                let height = Math.round((game.height - GROUNDHEIGHT - i.y - CRATEHEIGHT / 2) / CRATEHEIGHT) + 1;
+                var height = Math.round((game.height - GROUNDHEIGHT - i.y - CRATEHEIGHT / 2) / CRATEHEIGHT) + 1;
                 maxHeight = Math.max(height, maxHeight);
             }
         }, this);
         this.movingCrate.y = game.height - GROUNDHEIGHT - maxHeight * CRATEHEIGHT - gameOptions.fallingHeight;
-        let newHeight = game.height + CRATEHEIGHT * maxHeight;
-        let ratio = game.height / newHeight;
+        var newHeight = game.height + CRATEHEIGHT * maxHeight;
+        var ratio = game.height / newHeight;
         this.scaleCamera(ratio);
     },
-
-    showQuestion: function () {
-        // List question
-        let q1 = new Question('Chiều cao của Bùi Đào Anh Văn?',
-            ['170cm', '175cm'],
-            1);
-
-        let q2 = new Question('Bùi Đào Anh Văn ở quận nào?',
-            ['Q3', 'Tân Bình', 'Q12'],
-            2);
-
-        let q3 = new Question('Bùi Đào Anh Văn sinh năm bao nhiêu?',
-            ['1999', '2002', '1996', '1997'],
-            3);
-
-        let questions = [q1, q2, q3];
-
-        // Random question
-        let n = Math.floor(Math.random() * questions.length);
-
-        // Show question
-        questions[n].displayQuestion();
-
-        let ans = prompt('Vui lòng nhập câu trả lời');
-
-        // Check answer
-        questions[n].checkAnswer(parseInt(ans), this.timer = 9, () => {
-            game.time.events.remove(this.timerEvent);
-            this.movingCrate.destroy();
-            this.timeText.destroy();
-            game.time.events.add(Phaser.Timer.SECOND * 2, function () {
-                this.crateGroup.forEach(function (i) {
-                    i.body.static = true;
-                }, true)
-                this.removeEvent = game.time.events.loop(Phaser.Timer.SECOND / 10, this.removeCrate, this);
-            }, this);
-        });
-    },
-
     tick: function () {
         this.timer++;
-        gameOptions.timeDown ++;
         this.timeText.text = (gameOptions.timeLimit - this.timer).toString()
         if (this.timer > gameOptions.timeLimit) {
-            this.showQuestion();
+            this.timeText.text = 0;
+            this.game.paused = true;
+            swal("Write something here:", {
+                content: "input",
+            })
+                .then((value) => {
+                    if (value == '') {
+                        this.game.paused = false;
+                        game.time.events.remove(this.timerEvent);
+                        this.movingCrate.destroy();
+                        this.timeText.destroy();
+                        game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+                            this.crateGroup.forEach(function (i) {
+                                i.body.static = true;
+                            }, true)
+                            this.removeEvent = game.time.events.loop(Phaser.Timer.SECOND / 10, this.removeCrate, this);
+                        }, this);
+                    } else {
+                        this.game.paused = false;
+                        this.timer = 4;
+                    }
+                });
         }
     },
-
     removeCrate: function () {
         if (this.crateGroup.children.length > 0) {
-            let tempCrate = this.crateGroup.getChildAt(0);
-            let height = Math.round((game.height - GROUNDHEIGHT - tempCrate.y - CRATEHEIGHT / 2) / CRATEHEIGHT) + 1;
+            var tempCrate = this.crateGroup.getChildAt(0);
+            var height = Math.round((game.height - GROUNDHEIGHT - tempCrate.y - CRATEHEIGHT / 2) / CRATEHEIGHT) + 1;
             this.score += height;
             this.removeSound.play();
-            let crateScoreText = game.add.bitmapText(tempCrate.x, tempCrate.y, "smallfont", height.toString(), 36);
+            var crateScoreText = game.add.bitmapText(tempCrate.x, tempCrate.y, "smallfont", height.toString(), 36);
             crateScoreText.anchor.set(0.5);
             this.cameraGroup.add(crateScoreText);
             tempCrate.destroy();
@@ -278,17 +227,17 @@ playGame.prototype = {
         else {
             game.time.events.remove(this.removeEvent);
             this.gameOverSound.play();
-            let scoreText = game.add.bitmapText(game.width / 2, game.height / 5, "font", "DIEM CUA BAN", 72);
+            var scoreText = game.add.bitmapText(game.width / 2, game.height / 5, "font", "DIEM CUA BAN", 72);
             scoreText.anchor.set(0.5);
-            let scoreDisplayText = game.add.bitmapText(game.width / 2, game.height / 5 + 140, "font", this.score.toString(), 144);
+            var scoreDisplayText = game.add.bitmapText(game.width / 2, game.height / 5 + 140, "font", this.score.toString(), 144);
             scoreDisplayText.anchor.set(0.5);
             localStorage.setItem(gameOptions.localStorageName, JSON.stringify({
                 score: Math.max(this.score, this.savedData.score)
             }));
-            let mys = this.score.toString();
-            let myd = new Date();
-            let mydt = prompt('Nhập STĐ của bạn:');
-            let data = jQuery.param({
+            var mys = this.score.toString();
+            var myd = new Date();
+            var mydt = prompt('Nhập STĐ của bạn:');
+            var data = jQuery.param({
                 phone: mydt,
                 text: mys,
                 day: myd,
@@ -302,7 +251,7 @@ playGame.prototype = {
                     success: function (data) {
                     }
                 });
-                let sc = confirm('Lưu điểm thành công! Điểm càng cao, sẽ càng có cơ hội nhận quà lớn hơn! Cùng ViettelPay, say khuyến mãi!');
+                var sc = confirm('Lưu điểm thành công! Điểm càng cao, sẽ càng có cơ hội nhận quà lớn hơn! Cùng ViettelPay, say khuyến mãi!');
             }
             console.log(data);
             game.time.events.add(Phaser.Timer.SECOND * 2, function () {
