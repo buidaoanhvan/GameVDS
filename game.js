@@ -7,7 +7,7 @@
         }
 
         getQuestion() {
-            fetch('http://192.168.2.14/jstophp/cauhoi.php')
+            fetch('http://localhost/jstophp/cauhoi.php',{mode: 'cors'})
                 .then(res => {
                     return res.json();
                 })
