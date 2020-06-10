@@ -2,23 +2,31 @@
     var game;
 
     class Question {
-        constructor() {
-
-        }
+        constructor() { }
 
         getQuestion() {
-            fetch('http://192.168.2.14/jstophp/cauhoi.php')
+            fetch('https://buidaoanhvan13101997.000webhostapp.com/question.php')
                 .then(res => {
                     return res.json();
                 })
                 .then(data => {
-                    console.log(data);
+                    this.id = data.QuestionID;
+                    this.question = data.Question;
+                    this.answer = data.Answer;
                 })
                 .catch(err => {
                     console.log(err);
                 })
         }
     }
+
+    var stateQues = {
+
+    }
+
+    if (!stateQues.question) var q = new Question();
+    q.getQuestion();
+
 
     var gameOptions = {
         timeLimit: 10,
@@ -29,7 +37,11 @@
         localStorageName: "stackthecratesgame",
         gameWidth: 640,
         gameHeight: 960,
-        playerSpeed: 6000
+        playerSpeed: 6000,
+        stateQuestion: {
+            question: '',
+            answer: [],
+        }
     }
 
     var GROUNDHEIGHT;
@@ -211,29 +223,68 @@
             if (this.timer > gameOptions.timeLimit) {
                 this.timeText.text = 0;
                 this.game.paused = true;
-                var q = new Question();
-                q.getQuestion();
 
-                swal("Write something here:", {
-                    content: "input",
-                })
-                    .then((value) => {
-                        if (value == '') {
-                            this.game.paused = false;
-                            game.time.events.remove(this.timerEvent);
-                            this.movingCrate.destroy();
-                            this.timeText.destroy();
-                            game.time.events.add(Phaser.Timer.SECOND * 2, function () {
-                                this.crateGroup.forEach(function (i) {
-                                    i.body.static = true;
-                                }, true)
-                                this.removeEvent = game.time.events.loop(Phaser.Timer.SECOND / 10, this.removeCrate, this);
-                            }, this);
-                        } else {
-                            this.game.paused = false;
-                            this.timer = 4;
-                        }
-                    });
+                Swal.fire({
+                    title: `<p style="font-size: 18px">${q.question}</p>`,
+                    input: 'radio',
+                    confirmButtonText: 'Trả lời',
+                    showLoaderOnConfirm: true,
+                    customClass: {
+                        input: "my-radio"
+                    },
+                    allowOutsideClick: false,
+                    inputOptions: {
+                        "1": q.answer[0],
+                        "2": q.answer[1],
+                        "3": q.answer[2]
+                    },
+                    preConfirm: (ans) => {
+                        return fetch(`https://buidaoanhvan13101997.000webhostapp.com/question.php?id=${q.id}&ans=${ans}`)
+                            .then(res => {
+                                return res.json()
+                            })
+                            .then(ans => {
+                                if (ans == true) {
+                                    this.game.paused = false;
+                                    this.timer = 4;
+                                    q.getQuestion();
+                                } else {
+                                    this.game.paused = false;
+                                    game.time.events.remove(this.timerEvent);
+                                    this.movingCrate.destroy();
+                                    this.timeText.destroy();
+                                    game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+                                        this.crateGroup.forEach(function (i) {
+                                            i.body.static = true;
+                                        }, true)
+                                        this.removeEvent = game.time.events.loop(Phaser.Timer.SECOND / 10, this.removeCrate, this);
+                                    }, this);
+                                }
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            })
+                    },
+                });
+
+
+
+
+                // if (value == '') {
+                //     this.game.paused = false;
+                //     game.time.events.remove(this.timerEvent);
+                //     this.movingCrate.destroy();
+                //     this.timeText.destroy();
+                //     game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+                //         this.crateGroup.forEach(function (i) {
+                //             i.body.static = true;
+                //         }, true)
+                //         this.removeEvent = game.time.events.loop(Phaser.Timer.SECOND / 10, this.removeCrate, this);
+                //     }, this);
+                // } else {
+                //     this.game.paused = false;
+                //     this.timer = 4;
+                // }
             }
         },
         removeCrate: function () {
@@ -276,7 +327,6 @@
                     });
                     var sc = confirm('Lưu điểm thành công! Điểm càng cao, sẽ càng có cơ hội nhận quà lớn hơn! Cùng ViettelPay, say khuyến mãi!');
                 }
-                console.log(data);
                 game.time.events.add(Phaser.Timer.SECOND * 2, function () {
                     game.state.start("PlayGame");
                 }, this);

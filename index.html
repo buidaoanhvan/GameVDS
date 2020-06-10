@@ -23,6 +23,13 @@
             -ms-touch-action: none;
         }
 
+        .my-radio {
+            display: inline-flex !important;
+            flex-direction: column;
+            align-items: flex-start !important;
+            font-size: 16px;
+        }
+
         #wrongorientation {
             background: url("images/wrongorientation.png") no-repeat center center fixed;
             background-size: contain;
@@ -42,8 +49,9 @@
 
 <body>
     <div id="wrongorientation"></div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-</body>
+    <div id="myModal">
 
-</html>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+</body>
