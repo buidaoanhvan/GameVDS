@@ -2,23 +2,31 @@
     var game;
 
     class Question {
-        constructor() {
-
-        }
+        constructor() { }
 
         getQuestion() {
-            fetch('http://localhost/jstophp/cauhoi.php',{mode: 'cors'})
+            fetch('https://buidaoanhvan13101997.000webhostapp.com/question.php')
                 .then(res => {
                     return res.json();
                 })
                 .then(data => {
-                    console.log(data);
+                    this.id = data.QuestionID;
+                    this.question = data.Question;
+                    this.answer = data.Answer;
                 })
                 .catch(err => {
                     console.log(err);
                 })
         }
     }
+
+    var stateQues = {
+
+    }
+
+    if (!stateQues.question) var q = new Question();
+    q.getQuestion();
+
 
     var gameOptions = {
         timeLimit: 10,
@@ -29,7 +37,11 @@
         localStorageName: "stackthecratesgame",
         gameWidth: 640,
         gameHeight: 960,
-        playerSpeed: 6000
+        playerSpeed: 6000,
+        stateQuestion: {
+            question: '',
+            answer: [],
+        }
     }
 
     var GROUNDHEIGHT;
@@ -211,29 +223,49 @@
             if (this.timer > gameOptions.timeLimit) {
                 this.timeText.text = 0;
                 this.game.paused = true;
-                var q = new Question();
-                q.getQuestion();
 
-                swal("Write something here:", {
-                    content: "input",
-                })
-                    .then((value) => {
-                        if (value == '') {
-                            this.game.paused = false;
-                            game.time.events.remove(this.timerEvent);
-                            this.movingCrate.destroy();
-                            this.timeText.destroy();
-                            game.time.events.add(Phaser.Timer.SECOND * 2, function () {
-                                this.crateGroup.forEach(function (i) {
-                                    i.body.static = true;
-                                }, true)
-                                this.removeEvent = game.time.events.loop(Phaser.Timer.SECOND / 10, this.removeCrate, this);
-                            }, this);
-                        } else {
-                            this.game.paused = false;
-                            this.timer = 4;
-                        }
-                    });
+                Swal.fire({
+                    title: `<p style="font-size: 18px">${q.question}</p>`,
+                    input: 'radio',
+                    confirmButtonText: 'Trả lời',
+                    showLoaderOnConfirm: true,
+                    customClass: {
+                        input: "my-radio"
+                    },
+                    allowOutsideClick: false,
+                    inputOptions: {
+                        "1": q.answer[0],
+                        "2": q.answer[1],
+                        "3": q.answer[2]
+                    },
+                    preConfirm: (ans) => {
+                        return fetch(`https://buidaoanhvan13101997.000webhostapp.com/question.php?id=${q.id}&ans=${ans}`)
+                            .then(res => {
+                                return res.json()
+                            })
+                            .then(ans => {
+                                if (ans == true) {
+                                    this.game.paused = false;
+                                    this.timer = 4;
+                                    q.getQuestion();
+                                } else {
+                                    this.game.paused = false;
+                                    game.time.events.remove(this.timerEvent);
+                                    this.movingCrate.destroy();
+                                    this.timeText.destroy();
+                                    game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+                                        this.crateGroup.forEach(function (i) {
+                                            i.body.static = true;
+                                        }, true)
+                                        this.removeEvent = game.time.events.loop(Phaser.Timer.SECOND / 10, this.removeCrate, this);
+                                    }, this);
+                                }
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            })
+                    },
+                });
             }
         },
         removeCrate: function () {
@@ -259,27 +291,64 @@
                 }));
                 var mys = this.score.toString();
                 var myd = new Date();
-                var mydt = prompt('Nhập STĐ của bạn:');
-                var data = jQuery.param({
-                    phone: mydt,
-                    text: mys,
-                    day: myd,
-                    hostname: location.href
-                });
-                if (mydt != "") {
-                    $.ajax({
-                        type: "POST",
-                        url: "https://script.google.com/macros/s/AKfycbzCkedJfETfEbeQf_fvrfe4DF_qJGmEia_Lhf_FOl-YCGPDtDX-/exec",
-                        data: data,
-                        success: function (data) {
-                        }
-                    });
-                    var sc = confirm('Lưu điểm thành công! Điểm càng cao, sẽ càng có cơ hội nhận quà lớn hơn! Cùng ViettelPay, say khuyến mãi!');
-                }
-                console.log(data);
-                game.time.events.add(Phaser.Timer.SECOND * 2, function () {
-                    game.state.start("PlayGame");
-                }, this);
+
+
+                Swal.fire({
+                    title: `Tiếc quá bạn đã trả lời sai rồi `,
+                    html:
+                        '<input id="name" class="swal2-input"  placeholder="Nhập tên của bạn:" required/>' +
+                        '<input id="donvi" class="swal2-input" placeholder="Nhập phòng ban :" required/>' +
+                        '<input id="phone" class="swal2-input" placeholder="Nhập phòng ban :" required/>',
+                    confirmButtonText: 'Lưu thông tin',
+                    preConfirm: () => {
+                        return [
+                            name = $('#name').val(),
+                            donvi = $('#donvi').val(),
+                            phone = $('#phone').val(),
+                            Swal.fire({
+                                title: `<p style="font-size: 16px;">“Cảm ơn bạn đã đóng góp … miếng bánh vào tháp bánh khổng lồ để tặng VDS tròn 1 tuổi. Hãy cùng các đồng nghiệp của mình tiếp tục tìm cách xây được tháp bánh hình vuông 6x6 để nhận giải đặc biệt nhé”</p>`,
+                                imageUrl: 'hinh1.jpg',
+                                imageHeight: 250,
+                                imageAlt: 'A tall image',
+                            }),
+                            $.ajax({
+                                type: "POST",
+                                url: "https://buidaoanhvan13101997.000webhostapp.com/data.php",
+                                data: { data: name },
+                                success: function (data) {
+                                    console.log(data);
+                                    // game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+                                    //     game.state.start("PlayGame");
+                                    // }, this);
+                                }
+                            }),
+                        ]
+                    }
+                })
+
+
+                // var mydt = prompt('Nhập STĐ của bạn:');
+
+                // var data = jQuery.param({
+                //     phone: mydt,
+                //     text: mys,
+                //     day: myd,
+                //     hostname: location.href
+                // });
+                // if (mydt != "") {
+                //     $.ajax({
+                //         type: "POST",
+                //         url: "https://script.google.com/macros/s/AKfycbzCkedJfETfEbeQf_fvrfe4DF_qJGmEia_Lhf_FOl-YCGPDtDX-/exec",
+                //         data: data,
+                //         success: function (data) {
+                //         }
+                //     });
+                //     var sc = confirm('Lưu điểm thành công! Điểm càng cao, sẽ càng có cơ hội nhận quà lớn hơn! Cùng ViettelPay, say khuyến mãi!');
+                // }
+                //resetganme
+                // game.time.events.add(Phaser.Timer.SECOND * 2, function () {
+                //     game.state.start("PlayGame");
+                // }, this);
             }
         }
     }
