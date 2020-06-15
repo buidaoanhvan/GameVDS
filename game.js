@@ -138,12 +138,12 @@
             var title = game.add.image(game.width / 2, tap.y - 470, "title");
             title.anchor.set(0.5, 0);
             this.menuGroup.add(title);
-            var hiScoreText = game.add.bitmapText(game.width / 2, game.height - 74, "smallfont", "DIEM CAO NHAT", 24);
-            hiScoreText.anchor.set(0.5);
-            this.menuGroup.add(hiScoreText);
-            var hiScore = game.add.bitmapText(game.width / 2, game.height - 20, "font", this.savedData.score.toString(), 72);
-            hiScore.anchor.set(0.5);
-            this.menuGroup.add(hiScore);
+            // var hiScoreText = game.add.bitmapText(game.width / 2, game.height - 74, "smallfont", "DIEM CAO NHAT", 24);
+            // hiScoreText.anchor.set(0.5);
+            // this.menuGroup.add(hiScoreText);
+            // var hiScore = game.add.bitmapText(game.width / 2, game.height - 20, "font", this.savedData.score.toString(), 72);
+            // hiScore.anchor.set(0.5);
+            // this.menuGroup.add(hiScore);
             var tapTween = game.add.tween(tap).to({
                 alpha: 0
             }, 150, Phaser.Easing.Cubic.InOut, true, 0, -1, true);
@@ -225,9 +225,9 @@
                 this.game.paused = true;
 
                 Swal.fire({
-                    title: `<p style="font-size: 18px">${q.question}</p>`,
+                    title: `<p style="font-size: 18px">Câu hỏi: ${q.question}</p>`,
                     input: 'radio',
-                    confirmButtonText: 'Trả lời',
+                    confirmButtonText: 'Xác nhận',
                     showLoaderOnConfirm: true,
                     customClass: {
                         input: "my-radio"
@@ -244,11 +244,23 @@
                                 return res.json()
                             })
                             .then(ans => {
-                                if (ans == true) {
+                                if (ans) {
                                     this.game.paused = false;
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: `<p style="font-size: 24px">Chính xác! Bạn được cộng 5 giây</p>`,
+                                        showConfirmButton: false,
+                                        timer: 500
+                                    })
                                     this.timer = 4;
                                     q.getQuestion();
                                 } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: `<p style="font-size: 24px">Tiếc quá! Bạn trả lời sai rồi :(</p>`,
+                                        showConfirmButton: false,
+                                        timer: 1000
+                                    })
                                     this.game.paused = false;
                                     game.time.events.remove(this.timerEvent);
                                     this.movingCrate.destroy();
@@ -282,7 +294,7 @@
             else {
                 game.time.events.remove(this.removeEvent);
                 this.gameOverSound.play();
-                var scoreText = game.add.bitmapText(game.width / 2, game.height / 5, "font", "DIEM CUA BAN", 72);
+                var scoreText = game.add.bitmapText(game.width / 2, game.height / 5, "font", "DIEM CUA BAN:", 72);
                 scoreText.anchor.set(0.5);
                 var scoreDisplayText = game.add.bitmapText(game.width / 2, game.height / 5 + 140, "font", this.score.toString(), 144);
                 scoreDisplayText.anchor.set(0.5);
@@ -294,35 +306,44 @@
 
 
                 Swal.fire({
-                    title: `Tiếc quá bạn đã trả lời sai rồi `,
+                    title: `<p style="font-size: 27px">Mời bạn nhập thông tin</p>`,
                     html:
-                        '<input id="name" class="swal2-input"  placeholder="Nhập tên của bạn:" required/>' +
-                        '<input id="donvi" class="swal2-input" placeholder="Nhập phòng ban :" required/>' +
-                        '<input id="phone" class="swal2-input" placeholder="Nhập phòng ban :" required/>',
-                    confirmButtonText: 'Lưu thông tin',
+                        '<input id="name" class="swal2-input"  placeholder="Họ tên:" required/>' +
+                        '<input id="donvi" class="swal2-input" placeholder="Phòng ban:" required/>' +
+                        '<input id="phone" class="swal2-input" placeholder="Số điện thoại:" required/>',
+                    confirmButtonText: 'Gửi thông tin',
                     preConfirm: () => {
-                        return [
-                            name = $('#name').val(),
-                            donvi = $('#donvi').val(),
-                            phone = $('#phone').val(),
-                            Swal.fire({
-                                title: `<p style="font-size: 16px;">“Cảm ơn bạn đã đóng góp … miếng bánh vào tháp bánh khổng lồ để tặng VDS tròn 1 tuổi. Hãy cùng các đồng nghiệp của mình tiếp tục tìm cách xây được tháp bánh hình vuông 6x6 để nhận giải đặc biệt nhé”</p>`,
-                                imageUrl: 'hinh1.jpg',
-                                imageHeight: 250,
-                                imageAlt: 'A tall image',
-                            }),
-                            $.ajax({
-                                type: "POST",
-                                url: "https://buidaoanhvan13101997.000webhostapp.com/data.php",
-                                data: { data: name },
-                                success: function (data) {
-                                    console.log(data);
-                                    // game.time.events.add(Phaser.Timer.SECOND * 2, function () {
-                                    //     game.state.start("PlayGame");
-                                    // }, this);
-                                }
-                            }),
-                        ]
+                        if (document.querySelector('#name').value
+                            && document.querySelector('#donvi').value
+                            && document.querySelector('#phone').value) {
+                            return [
+                                name = $('#name').val(),
+                                donvi = $('#donvi').val(),
+                                phone = $('#phone').val(),
+                                Swal.fire({
+                                    title: `<p style="font-size: 17px;">“Cảm ơn bạn đã đóng góp miếng bánh vào tháp bánh khổng lồ để tặng VDS tròn 1 tuổi. Hãy cùng các đồng nghiệp của mình tiếp tục tìm cách xây được tháp bánh hình vuông 6x6 để nhận giải đặc biệt nhé.”</p>`,
+                                    imageUrl: 'hinh1.jpg',
+                                    imageHeight: 250,
+                                    imageWidth: 600,
+                                    imageAlt: 'A tall image',
+                                    confirmButtonText: 'Chơi tiếp',
+                                }),
+                                $.ajax({
+                                    type: "POST",
+                                    url: "https://buidaoanhvan13101997.000webhostapp.com/data.php",
+                                    data: { data: name },
+                                    success: function (data) {
+                                        console.log(data);
+                                        game.time.events.add(Phaser.Timer.SECOND * 3, function () {
+                                            game.state.start("PlayGame");
+                                        }, this);
+                                    }
+                                }),
+                            ]
+                        } else {
+                            Swal.showValidationMessage('Vui lòng nhập đầy đủ thông tin');
+                        };
+
                     }
                 })
 
