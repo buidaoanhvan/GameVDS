@@ -294,10 +294,6 @@
             else {
                 game.time.events.remove(this.removeEvent);
                 this.gameOverSound.play();
-                var scoreText = game.add.bitmapText(game.width / 2, game.height / 5, "font", "DIEM CUA BAN:", 72);
-                scoreText.anchor.set(0.5);
-                var scoreDisplayText = game.add.bitmapText(game.width / 2, game.height / 5 + 140, "font", this.score.toString(), 144);
-                scoreDisplayText.anchor.set(0.5);
                 localStorage.setItem(gameOptions.localStorageName, JSON.stringify({
                     score: Math.max(this.score, this.savedData.score)
                 }));
@@ -322,6 +318,7 @@
                                 phone = $('#phone').val(),
                                 Swal.fire({
                                     title: `<p style="font-size: 17px;">“Cảm ơn bạn đã đóng góp miếng bánh vào tháp bánh khổng lồ để tặng VDS tròn 1 tuổi. Hãy cùng các đồng nghiệp của mình tiếp tục tìm cách xây được tháp bánh hình vuông 6x6 để nhận giải đặc biệt nhé.”</p>`,
+                                    html: `<p style="font-size: 27px;">Điểm số: ${this.score.toString()}</p>`,
                                     imageUrl: 'hinh1.jpg',
                                     imageHeight: 250,
                                     imageWidth: 600,
@@ -346,30 +343,6 @@
 
                     }
                 })
-
-
-                // var mydt = prompt('Nhập STĐ của bạn:');
-
-                // var data = jQuery.param({
-                //     phone: mydt,
-                //     text: mys,
-                //     day: myd,
-                //     hostname: location.href
-                // });
-                // if (mydt != "") {
-                //     $.ajax({
-                //         type: "POST",
-                //         url: "https://script.google.com/macros/s/AKfycbzCkedJfETfEbeQf_fvrfe4DF_qJGmEia_Lhf_FOl-YCGPDtDX-/exec",
-                //         data: data,
-                //         success: function (data) {
-                //         }
-                //     });
-                //     var sc = confirm('Lưu điểm thành công! Điểm càng cao, sẽ càng có cơ hội nhận quà lớn hơn! Cùng ViettelPay, say khuyến mãi!');
-                // }
-                //resetganme
-                // game.time.events.add(Phaser.Timer.SECOND * 2, function () {
-                //     game.state.start("PlayGame");
-                // }, this);
             }
         }
     }
