@@ -138,12 +138,6 @@
             var title = game.add.image(game.width / 2, tap.y - 470, "title");
             title.anchor.set(0.5, 0);
             this.menuGroup.add(title);
-            // var hiScoreText = game.add.bitmapText(game.width / 2, game.height - 74, "smallfont", "DIEM CAO NHAT", 24);
-            // hiScoreText.anchor.set(0.5);
-            // this.menuGroup.add(hiScoreText);
-            // var hiScore = game.add.bitmapText(game.width / 2, game.height - 20, "font", this.savedData.score.toString(), 72);
-            // hiScore.anchor.set(0.5);
-            // this.menuGroup.add(hiScore);
             var tapTween = game.add.tween(tap).to({
                 alpha: 0
             }, 150, Phaser.Easing.Cubic.InOut, true, 0, -1, true);
@@ -318,7 +312,7 @@
                                 phone = $('#phone').val(),
                                 Swal.fire({
                                     title: `<p style="font-size: 17px;">“Cảm ơn bạn đã đóng góp miếng bánh vào tháp bánh khổng lồ để tặng VDS tròn 1 tuổi. Hãy cùng các đồng nghiệp của mình tiếp tục tìm cách xây được tháp bánh hình vuông 6x6 để nhận giải đặc biệt nhé.”</p>`,
-                                    html: `<p style="font-size: 27px;">Điểm số: ${this.score.toString()}</p>`,
+                                    html: `<p style="font-size: 30px;">Điểm số: ${this.score.toString()}</p>`,
                                     imageUrl: 'hinh1.jpg',
                                     imageHeight: 250,
                                     imageWidth: 600,
