@@ -322,7 +322,7 @@
                                     imageUrl: 'hinh1.jpg',
                                     imageHeight: 250,
                                     imageWidth: 600,
-                                    imageAlt: 'A tall image',
+                                    imageAlt: 'Chúc Mừng VDS 1 Tuổi',
                                     confirmButtonText: 'Chơi tiếp',
                                 }),
                                 $.ajax({
