@@ -302,6 +302,7 @@
                         '<input id="donvi" class="swal2-input" placeholder="Phòng ban:" required/>' +
                         '<input id="phone" class="swal2-input" placeholder="Số điện thoại:" required/>',
                     confirmButtonText: 'Gửi thông tin',
+                    allowOutsideClick: false,
                     preConfirm: () => {
                         if (document.querySelector('#name').value
                             && document.querySelector('#donvi').value
