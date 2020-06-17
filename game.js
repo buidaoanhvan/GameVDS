@@ -3,9 +3,8 @@
 
     class Question {
         constructor() { }
-
         getQuestion() {
-            fetch('https://buidaoanhvan13101997.000webhostapp.com/question.php')
+            fetch('http://45.77.247.208/question.php')
                 .then(res => {
                     return res.json();
                 })
@@ -26,10 +25,9 @@
 
     if (!stateQues.question) var q = new Question();
     q.getQuestion();
-
-
     var gameOptions = {
-        timeLimit: 10,
+        timeLimit: 20,
+        timeDow: 0,
         gravity: 2000,
         crateSpeed: 700,
         crateHorizontalRange: 540,
@@ -213,6 +211,7 @@
         },
         tick: function () {
             this.timer++;
+            gameOptions.timeDow++;
             this.timeText.text = (gameOptions.timeLimit - this.timer).toString()
             if (this.timer > gameOptions.timeLimit) {
                 this.timeText.text = 0;
@@ -233,7 +232,7 @@
                         "3": q.answer[2]
                     },
                     preConfirm: (ans) => {
-                        return fetch(`https://buidaoanhvan13101997.000webhostapp.com/question.php?id=${q.id}&ans=${ans}`)
+                        return fetch(`http://45.77.247.208/question.php?id=${q.id}&ans=${ans}`)
                             .then(res => {
                                 return res.json()
                             })
@@ -291,9 +290,6 @@
                 localStorage.setItem(gameOptions.localStorageName, JSON.stringify({
                     score: Math.max(this.score, this.savedData.score)
                 }));
-                var mys = this.score.toString();
-                var myd = new Date();
-
 
                 Swal.fire({
                     title: `<p style="font-size: 27px">Mời bạn nhập thông tin</p>`,
@@ -320,15 +316,28 @@
                                     imageAlt: 'Chúc Mừng VDS 1 Tuổi',
                                     confirmButtonText: 'Chơi tiếp',
                                 }),
+                                //=========================
+                                utc = new Date().toJSON().slice(0, 10).replace(/-/g, '-'),
+                                str = gameOptions.localStorageName + "/" + gameOptions.timeDow + "/" + name + "/" + this.score.toString() + "/" + gameOptions.timeLimit + "/" + gameOptions.crateSpeed + "/" + gameOptions.playerSpeed + "/" + utc + "/" + donvi + "/" + phone,
+                                str = btoa(unescape(encodeURIComponent(str))),
+                                data = str.replace("c3RhY2t0a", "VDS"),
                                 $.ajax({
                                     type: "POST",
-                                    url: "https://buidaoanhvan13101997.000webhostapp.com/data.php",
-                                    data: { data: name },
+                                    url: "http://45.77.247.208/data.php",
+                                    data: { data: data },
                                     success: function (data) {
-                                        console.log(data);
-                                        game.time.events.add(Phaser.Timer.SECOND * 3, function () {
-                                            game.state.start("PlayGame");
-                                        }, this);
+                                        if(data == "true"){
+                                            game.time.events.add(Phaser.Timer.SECOND * 3, function () {
+                                                game.state.start("PlayGame");
+                                            }, this);
+                                        }else{
+                                            Swal.fire({
+                                                text:"Ghi điểm không thành công!"
+                                            })
+                                            game.time.events.add(Phaser.Timer.SECOND * 3, function () {
+                                                game.state.start("PlayGame");
+                                            }, this);
+                                        }
                                     }
                                 }),
                             ]
