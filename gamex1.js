@@ -1,6 +1,5 @@
 (function () {
     var game;
-
     class Question {
         constructor() { }
         getQuestion() {
@@ -75,6 +74,7 @@
             game.load.image("crate", "assets/sprites/crate.png");
             game.load.image("title", "assets/sprites/title.png");
             game.load.image("tap", "assets/sprites/tap.png");
+            game.load.audio("hpbd", ["assets/sounds/HPBD.mp3", "assets/sounds/HPBD.ogg"]);
             game.load.audio("hit01", ["assets/sounds/hit01.mp3", "assets/sounds/hit01.ogg"]);
             game.load.audio("hit02", ["assets/sounds/hit02.mp3", "assets/sounds/hit02.ogg"]);
             game.load.audio("hit03", ["assets/sounds/hit03.mp3", "assets/sounds/hit03.ogg"]);
@@ -83,6 +83,7 @@
             game.load.bitmapFont("font", "assets/fonts/font.png", "assets/fonts/font.fnt");
             game.load.bitmapFont("smallfont", "assets/fonts/smallfont.png", "assets/fonts/smallfont.fnt");
         },
+        
         create: function () {
             if (!Phaser.Device.desktop) {
                 game.scale.forceOrientation(false, true);
@@ -102,6 +103,7 @@
             this.hitSound = [game.add.audio("hit01"), game.add.audio("hit02"), game.add.audio("hit03")];
             this.gameOverSound = game.add.audio("gameover");
             this.removeSound = game.add.audio("remove");
+            this.gamehpbd = game.add.audio("hpbd");
             this.score = 0;
             GROUNDHEIGHT = game.cache.getImage("ground").height;
             CRATEHEIGHT = game.cache.getImage("crate").height;
@@ -136,6 +138,7 @@
             var title = game.add.image(game.width / 2, tap.y - 470, "title");
             title.anchor.set(0.5, 0);
             this.menuGroup.add(title);
+            this.gamehpbd.play();
             var tapTween = game.add.tween(tap).to({
                 alpha: 0
             }, 150, Phaser.Easing.Cubic.InOut, true, 0, -1, true);
