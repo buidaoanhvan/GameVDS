@@ -26,7 +26,7 @@
     if (!stateQues.question) var q = new Question();
     q.getQuestion();
     var gameOptions = {
-        timeLimit: 60,
+        timeLimit: 30,
         timeDow: 0,
         gravity: 2000,
         crateSpeed: 700,
@@ -70,11 +70,12 @@
             game.scale.pageAlignHorizontally = true;
             game.scale.pageAlignVertically = true;
             game.stage.disableVisibilityChange = true;
-            game.load.image("ground", "assets/sprites/ground2.png");
-            game.load.image("sky", "assets/sprites/sky2.png");
-            game.load.image("crate", "assets/sprites/crate2.png");
-            game.load.image("title", "assets/sprites/title2.png");
+            game.load.image("ground", "assets/sprites/ground.png");
+            game.load.image("sky", "assets/sprites/sky.png");
+            game.load.image("crate", "assets/sprites/crate.png");
+            game.load.image("title", "assets/sprites/title.png");
             game.load.image("tap", "assets/sprites/tap.png");
+            game.load.audio("hpbd", ["assets/sounds/HPBD.mp3", "assets/sounds/HPBD.ogg"]);
             game.load.audio("hit01", ["assets/sounds/hit01.mp3", "assets/sounds/hit01.ogg"]);
             game.load.audio("hit02", ["assets/sounds/hit02.mp3", "assets/sounds/hit02.ogg"]);
             game.load.audio("hit03", ["assets/sounds/hit03.mp3", "assets/sounds/hit03.ogg"]);
@@ -136,6 +137,8 @@
             var title = game.add.image(game.width / 2, tap.y - 470, "title");
             title.anchor.set(0.5, 0);
             this.menuGroup.add(title);
+            this.gamehpbd = game.add.audio("hpbd");
+            this.gamehpbd.play();
             var tapTween = game.add.tween(tap).to({
                 alpha: 0
             }, 150, Phaser.Easing.Cubic.InOut, true, 0, -1, true);
@@ -245,7 +248,7 @@
                                         showConfirmButton: false,
                                         timer: 500
                                     })
-                                    this.timer = 39;
+                                    this.timer = 9;
                                     q.getQuestion();
                                 } else {
                                     Swal.fire({
@@ -294,8 +297,8 @@
                 Swal.fire({
                     title: `<p style="font-size: 27px">Mời bạn nhập thông tin</p>`,
                     html:
+                        '<select style="width: 100%; margin: 1em auto; height: 2.625em; padding: 0 .75em; border: 1px solid #d9d9d9; border-radius: .1875em; font-size: 1.125em; color: inherit;" id="donvi"> <option value="">Chọn phòng ban</option> <option value="Ban Tổng Giám đốc">Ban Tổng Giám đốc</option> <option value="Phòng Chiến lược - KCQ">Phòng Chiến lược - KCQ</option> <option value="Phòng Chính trị - KCQ">Phòng Chính trị - KCQ</option> <option value="Phòng CSKH và KSCL - KCQ">Phòng CSKH và KSCL - KCQ</option> <option value="Phòng Khách hàng và Marketing - KCQ">Phòng Khách hàng và Marketing - KCQ</option> <option value="Phòng Kinh doanh thị trường nước ngoài - KCQ">Phòng Kinh doanh thị trường nước ngoài - KCQ</option> <option value="Phòng Quản trị rủi ro và Quy trình - KCQ">Phòng Quản trị rủi ro và Quy trình - KCQ</option> <option value="Phòng Tài chính và Đối soát - KCQ">Phòng Tài chính và Đối soát - KCQ</option> <option value="Phòng Tổ chức lao động - KCQ">Phòng Tổ chức lao động - KCQ</option> <option value="Văn Phòng - KCQ">Văn Phòng - KCQ</option> <option value="Phòng An Toàn thông tin - TTCN">Phòng An Toàn thông tin - TTCN</option> <option value="Phòng Backend - TTCN">Phòng Backend - TTCN</option> <option value="Phòng Chuyển dịch số - TTCN">Phòng Chuyển dịch số - TTCN</option> <option value="Phòng Giải pháp - TTCN">Phòng Giải pháp - TTCN</option> <option value="Phòng Hỗ trợ thị trường - TTCN">Phòng Hỗ trợ thị trường - TTCN</option> <option value="Phòng Kiểm thử - TTCN">Phòng Kiểm thử - TTCN</option> <option value="Phòng Mobile App - TTCN">Phòng Mobile App - TTCN</option> <option value="Phòng Phân tích dữ liệu - TTCN">Phòng Phân tích dữ liệu - TTCN</option> <option value="Phòng Quản lý dự án - TTCN">Phòng Quản lý dự án - TTCN</option> <option value="Phòng ViettelPay App - TTCN">Phòng ViettelPay App - TTCN</option> <option value="Phòng Web App - TTCN">Phòng Web App - TTCN</option> <option value="Phòng Kênh bán hàng số - TTĐHKD">Phòng Kênh bán hàng số - TTĐHKD</option> <option value="Phòng Kênh Khách hàng doanh nghiệp - TTĐHKD">Phòng Kênh Khách hàng doanh nghiệp - TTĐHKD</option> <option value="Phòng Kết nối dịch vụ - TTĐHKD">Phòng Kết nối dịch vụ - TTĐHKD</option> <option value="Phòng Khai thác dịch vụ - TTĐHKD">Phòng Khai thác dịch vụ - TTĐHKD</option> <option value="Phòng Quản lý kênh tỉnh - TTĐHKD">Phòng Quản lý kênh tỉnh - TTĐHKD</option> <option value="Phòng Dịch vụ dữ liệu - TTSP">Phòng Dịch vụ dữ liệu - TTSP</option> <option value="Phòng Sản phẩm mới - TTSP">Phòng Sản phẩm mới - TTSP</option> <option value="Phòng Sản phẩm ngân hàng - TTSP">Phòng Sản phẩm ngân hàng - TTSP</option> <option value="Phòng Sản phẩm thanh toán số - TTSP">Phòng Sản phẩm thanh toán số - TTSP</option> <option value="Phòng SP Mobile Money - TTSP">Phòng SP Mobile Money - TTSP</option> <option value="Phòng UI/UX - TTSP">Phòng UI/UX - TTSP</option></select>' +
                         '<input id="name" class="swal2-input"  placeholder="Họ tên:" required/>' +
-                        '<input id="donvi" class="swal2-input" placeholder="Phòng ban:" required/>' +
                         '<input id="phone" class="swal2-input" placeholder="Số điện thoại:" required/>',
                     confirmButtonText: 'Gửi thông tin',
                     allowOutsideClick: false,
