@@ -26,7 +26,7 @@
     if (!stateQues.question) var q = new Question();
     q.getQuestion();
     var gameOptions = {
-        timeLimit: 60,
+        timeLimit: 30,
         timeDow: 0,
         gravity: 2000,
         crateSpeed: 700,
@@ -70,10 +70,10 @@
             game.scale.pageAlignHorizontally = true;
             game.scale.pageAlignVertically = true;
             game.stage.disableVisibilityChange = true;
-            game.load.image("ground", "assets/sprites/ground2.png");
-            game.load.image("sky", "assets/sprites/sky2.png");
-            game.load.image("crate", "assets/sprites/crate2.png");
-            game.load.image("title", "assets/sprites/title2.png");
+            game.load.image("ground", "assets/sprites/ground.png");
+            game.load.image("sky", "assets/sprites/sky.png");
+            game.load.image("crate", "assets/sprites/crate.png");
+            game.load.image("title", "assets/sprites/title.png");
             game.load.image("tap", "assets/sprites/tap.png");
             game.load.audio("hit01", ["assets/sounds/hit01.mp3", "assets/sounds/hit01.ogg"]);
             game.load.audio("hit02", ["assets/sounds/hit02.mp3", "assets/sounds/hit02.ogg"]);
@@ -245,7 +245,7 @@
                                         showConfirmButton: false,
                                         timer: 500
                                     })
-                                    this.timer = 39;
+                                    this.timer = 9;
                                     q.getQuestion();
                                 } else {
                                     Swal.fire({
