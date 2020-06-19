@@ -1,10 +1,9 @@
 (function () {
     var game;
-
     class Question {
         constructor() { }
         getQuestion() {
-            fetch('http://10.255.62.205/question.php')
+            fetch('http://45.77.247.208/question.php')
                 .then(res => {
                     return res.json();
                 })
@@ -26,7 +25,7 @@
     if (!stateQues.question) var q = new Question();
     q.getQuestion();
     var gameOptions = {
-        timeLimit: 30,
+        timeLimit: 60,
         timeDow: 0,
         gravity: 2000,
         crateSpeed: 700,
@@ -70,10 +69,10 @@
             game.scale.pageAlignHorizontally = true;
             game.scale.pageAlignVertically = true;
             game.stage.disableVisibilityChange = true;
-            game.load.image("ground", "assets/sprites/ground.png");
-            game.load.image("sky", "assets/sprites/sky.png");
-            game.load.image("crate", "assets/sprites/crate.png");
-            game.load.image("title", "assets/sprites/title.png");
+            game.load.image("ground", "assets/sprites/ground2.png");
+            game.load.image("sky", "assets/sprites/sky2.png");
+            game.load.image("crate", "assets/sprites/crate2.png");
+            game.load.image("title", "assets/sprites/title2.png");
             game.load.image("tap", "assets/sprites/tap.png");
             game.load.audio("hpbd", ["assets/sounds/HPBD.mp3", "assets/sounds/HPBD.ogg"]);
             game.load.audio("hit01", ["assets/sounds/hit01.mp3", "assets/sounds/hit01.ogg"]);
@@ -84,6 +83,7 @@
             game.load.bitmapFont("font", "assets/fonts/font.png", "assets/fonts/font.fnt");
             game.load.bitmapFont("smallfont", "assets/fonts/smallfont.png", "assets/fonts/smallfont.fnt");
         },
+        
         create: function () {
             if (!Phaser.Device.desktop) {
                 game.scale.forceOrientation(false, true);
@@ -98,11 +98,13 @@
                     document.getElementById("wrongorientation").style.display = "none";
                 })
             }
+            game.sound.stopAll();
             this.lastSoundPlayed = Date.now();
             this.savedData = localStorage.getItem(gameOptions.localStorageName) == null ? { score: 0 } : JSON.parse(localStorage.getItem(gameOptions.localStorageName));
             this.hitSound = [game.add.audio("hit01"), game.add.audio("hit02"), game.add.audio("hit03")];
             this.gameOverSound = game.add.audio("gameover");
             this.removeSound = game.add.audio("remove");
+            this.gamehpbd = game.add.audio("hpbd");
             this.score = 0;
             GROUNDHEIGHT = game.cache.getImage("ground").height;
             CRATEHEIGHT = game.cache.getImage("crate").height;
@@ -235,7 +237,7 @@
                         "3": q.answer[2]
                     },
                     preConfirm: (ans) => {
-                        return fetch(`http://10.255.62.205/question.php?id=${q.id}&ans=${ans}`)
+                        return fetch(`http://45.77.247.208/question.php?id=${q.id}&ans=${ans}`)
                             .then(res => {
                                 return res.json()
                             })
@@ -248,7 +250,7 @@
                                         showConfirmButton: false,
                                         timer: 500
                                     })
-                                    this.timer = 9;
+                                    this.timer = 39;
                                     q.getQuestion();
                                 } else {
                                     Swal.fire({
@@ -325,7 +327,7 @@
                                 data = str.replace("c3RhY2t0a", "VDS"),
                                 $.ajax({
                                     type: "POST",
-                                    url: "http://10.255.62.205/data.php",
+                                    url: "http://45.77.247.208/data.php",
                                     data: { data: data },
                                     success: function (data) {
                                         if(data == "true"){

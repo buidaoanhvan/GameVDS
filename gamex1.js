@@ -3,7 +3,7 @@
     class Question {
         constructor() { }
         getQuestion() {
-            fetch('http://10.255.62.205/question.php')
+            fetch('http://45.77.247.208/question.php')
                 .then(res => {
                     return res.json();
                 })
@@ -98,6 +98,7 @@
                     document.getElementById("wrongorientation").style.display = "none";
                 })
             }
+            game.sound.stopAll();
             this.lastSoundPlayed = Date.now();
             this.savedData = localStorage.getItem(gameOptions.localStorageName) == null ? { score: 0 } : JSON.parse(localStorage.getItem(gameOptions.localStorageName));
             this.hitSound = [game.add.audio("hit01"), game.add.audio("hit02"), game.add.audio("hit03")];
@@ -236,7 +237,7 @@
                         "3": q.answer[2]
                     },
                     preConfirm: (ans) => {
-                        return fetch(`http://10.255.62.205/question.php?id=${q.id}&ans=${ans}`)
+                        return fetch(`http://45.77.247.208/question.php?id=${q.id}&ans=${ans}`)
                             .then(res => {
                                 return res.json()
                             })
@@ -326,7 +327,7 @@
                                 data = str.replace("c3RhY2t0a", "VDS"),
                                 $.ajax({
                                     type: "POST",
-                                    url: "http://10.255.62.205/data.php",
+                                    url: "http://45.77.247.208/data.php",
                                     data: { data: data },
                                     success: function (data) {
                                         if(data == "true"){
